@@ -1,84 +1,189 @@
-# Create an empty dictionary to store contacts
+# Import tkinter for GUI
+import tkinter as tk
+
+# Import messagebox for popup messages
+from tkinter import messagebox
+
+# Dictionary to store contacts
 contacts = {}
 
-while True:
-    # Display menu
-    print("\n===== CONTACT BOOK =====")
-    print("1. Add Contact")
-    print("2. View Contacts")
-    print("3. Search Contact")
-    print("4. Update Contact")
-    print("5. Delete Contact")
-    print("6. Exit")
+# Function to add contact
+def add_contact():
+    name = name_entry.get()
+    phone = phone_entry.get()
+    email = email_entry.get()
+    address = address_entry.get()
 
-    choice = input("Enter your choice: ")
+    # Check if name field is empty
+    if name == "":
+        messagebox.showerror("Error", "Please enter a name!")
+        return
 
-    # Add Contact
-    if choice == "1":
-        name = input("Enter Name: ")
-        phone = input("Enter Phone Number: ")
-        email = input("Enter Email: ")
-        address = input("Enter Address: ")
+    # Save contact
+    contacts[name] = [phone, email, address]
 
-        contacts[name] = {
-            "Phone": phone,
-            "Email": email,
-            "Address": address
-        }
+    messagebox.showinfo("Success", "Contact Added Successfully!")
 
-        print("Contact Added Successfully!")
+    clear_fields()
+    view_contacts()
 
-    # View Contacts
-    elif choice == "2":
-        if contacts:
-            print("\nContact List:")
-            for name, details in contacts.items():
-                print(f"\nName: {name}")
-                print("Phone:", details["Phone"])
-                print("Email:", details["Email"])
-                print("Address:", details["Address"])
-        else:
-            print("No Contacts Found!")
 
-    # Search Contact
-    elif choice == "3":
-        name = input("Enter Name to Search: ")
+# Function to display contacts
+def view_contacts():
+    contact_list.delete(0, tk.END)
 
-        if name in contacts:
-            print("\nContact Found!")
-            print("Phone:", contacts[name]["Phone"])
-            print("Email:", contacts[name]["Email"])
-            print("Address:", contacts[name]["Address"])
-        else:
-            print("Contact Not Found!")
+    for name in contacts:
+        contact_list.insert(tk.END, name)
 
-    # Update Contact
-    elif choice == "4":
-        name = input("Enter Name to Update: ")
 
-        if name in contacts:
-            contacts[name]["Phone"] = input("New Phone: ")
-            contacts[name]["Email"] = input("New Email: ")
-            contacts[name]["Address"] = input("New Address: ")
+# Function to search contact
+def search_contact():
+    name = name_entry.get()
 
-            print("Contact Updated Successfully!")
-        else:
-            print("Contact Not Found!")
+    if name in contacts:
 
-    # Delete Contact
-    elif choice == "5":
-        name = input("Enter Name to Delete: ")
+        phone_entry.delete(0, tk.END)
+        phone_entry.insert(0, contacts[name][0])
 
-        if name in contacts:
-            del contacts[name]
-            print("Contact Deleted Successfully!")
-        else:
-            print("Contact Not Found!")
+        email_entry.delete(0, tk.END)
+        email_entry.insert(0, contacts[name][1])
 
-    # Exit Program
-    elif choice == "6":
-        print("Thank You for Using Contact Book!")
-        break
+        address_entry.delete(0, tk.END)
+        address_entry.insert(0, contacts[name][2])
 
     else:
-        print("Invalid Choice! Try Again.")
+        messagebox.showerror("Error", "Contact Not Found!")
+
+
+# Function to update contact
+def update_contact():
+    name = name_entry.get()
+
+    if name in contacts:
+
+        contacts[name] = [
+            phone_entry.get(),
+            email_entry.get(),
+            address_entry.get()
+        ]
+
+        messagebox.showinfo("Success", "Contact Updated!")
+
+        view_contacts()
+
+    else:
+        messagebox.showerror("Error", "Contact Not Found!")
+
+
+# Function to delete contact
+def delete_contact():
+    name = name_entry.get()
+
+    if name in contacts:
+
+        del contacts[name]
+
+        messagebox.showinfo("Success", "Contact Deleted!")
+
+        clear_fields()
+        view_contacts()
+
+    else:
+        messagebox.showerror("Error", "Contact Not Found!")
+
+
+# Function to clear input fields
+def clear_fields():
+    name_entry.delete(0, tk.END)
+    phone_entry.delete(0, tk.END)
+    email_entry.delete(0, tk.END)
+    address_entry.delete(0, tk.END)
+
+
+# Create main window
+root = tk.Tk()
+
+# Window title
+root.title("Contact Book")
+
+# Window size
+root.geometry("600x500")
+
+# Heading
+title = tk.Label(
+    root,
+    text="CONTACT BOOK",
+    font=("Arial", 18, "bold")
+)
+title.pack(pady=10)
+
+# Name
+tk.Label(root, text="Name").pack()
+name_entry = tk.Entry(root, width=40)
+name_entry.pack()
+
+# Phone
+tk.Label(root, text="Phone Number").pack()
+phone_entry = tk.Entry(root, width=40)
+phone_entry.pack()
+
+# Email
+tk.Label(root, text="Email").pack()
+email_entry = tk.Entry(root, width=40)
+email_entry.pack()
+
+# Address
+tk.Label(root, text="Address").pack()
+address_entry = tk.Entry(root, width=40)
+address_entry.pack()
+
+# Buttons Frame
+button_frame = tk.Frame(root)
+button_frame.pack(pady=10)
+
+# Buttons
+tk.Button(
+    button_frame,
+    text="Add",
+    width=12,
+    command=add_contact
+).grid(row=0, column=0, padx=5)
+
+tk.Button(
+    button_frame,
+    text="Search",
+    width=12,
+    command=search_contact
+).grid(row=0, column=1, padx=5)
+
+tk.Button(
+    button_frame,
+    text="Update",
+    width=12,
+    command=update_contact
+).grid(row=0, column=2, padx=5)
+
+tk.Button(
+    button_frame,
+    text="Delete",
+    width=12,
+    command=delete_contact
+).grid(row=0, column=3, padx=5)
+
+# Contact List Title
+tk.Label(
+    root,
+    text="Saved Contacts",
+    font=("Arial", 12, "bold")
+).pack()
+
+# Contact List Box
+contact_list = tk.Listbox(
+    root,
+    width=50,
+    height=10
+)
+contact_list.pack(pady=10)
+
+# Start application
+root.mainloop()
