@@ -7,7 +7,6 @@ import random
 # Import string module to get letters, digits, and symbols
 import string
 
-
 # Function to generate password
 def generate_password():
     try:
@@ -27,7 +26,6 @@ def generate_password():
         # Display error if user enters invalid input
         result_label.config(text="Enter a valid number!")
 
-
 # Create main application window
 root = tk.Tk()
 
@@ -36,7 +34,6 @@ root.title("Password Generator")
 
 # Set window size
 root.geometry("400x250")
-
 
 # Create heading label
 tk.Label(
@@ -52,11 +49,9 @@ tk.Label(
     text="Enter Password Length"
 ).pack()
 
-
 # Create input box for length
 length_entry = tk.Entry(root)
 length_entry.pack(pady=5)
-
 
 # Create button to generate password
 tk.Button(
@@ -64,7 +59,6 @@ tk.Button(
     text="Generate Password",
     command=generate_password
 ).pack(pady=10)
-
 
 # Label to display generated password
 result_label = tk.Label(
